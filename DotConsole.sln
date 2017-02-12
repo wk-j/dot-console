@@ -1,9 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotConsole", "DotConsole\DotConsole.csproj", "{6300F102-7DB6-4820-93F2-AB02FCCC5F97}"
-EndProject
 Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "DotConsole.Core", "DotConsole.Core\DotConsole.Core.fsproj", "{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}"
+EndProject
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "DotConsole.Tests", "DotConsole.Tests\DotConsole.Tests.fsproj", "{74DF7A40-2517-49F9-A312-CFB4B827B5DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,13 +11,13 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6300F102-7DB6-4820-93F2-AB02FCCC5F97}.Debug|x86.ActiveCfg = Debug|x86
-		{6300F102-7DB6-4820-93F2-AB02FCCC5F97}.Debug|x86.Build.0 = Debug|x86
-		{6300F102-7DB6-4820-93F2-AB02FCCC5F97}.Release|x86.ActiveCfg = Release|x86
-		{6300F102-7DB6-4820-93F2-AB02FCCC5F97}.Release|x86.Build.0 = Release|x86
 		{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}.Debug|x86.Build.0 = Debug|Any CPU
 		{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}.Release|x86.ActiveCfg = Release|Any CPU
 		{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}.Release|x86.Build.0 = Release|Any CPU
+		{74DF7A40-2517-49F9-A312-CFB4B827B5DB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{74DF7A40-2517-49F9-A312-CFB4B827B5DB}.Debug|x86.Build.0 = Debug|Any CPU
+		{74DF7A40-2517-49F9-A312-CFB4B827B5DB}.Release|x86.ActiveCfg = Release|Any CPU
+		{74DF7A40-2517-49F9-A312-CFB4B827B5DB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

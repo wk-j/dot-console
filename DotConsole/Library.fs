@@ -1,4 +1,4 @@
-﻿module DotConsole.Core.Library
+﻿module DotConsole.Library
 
 type SolutionName = SolutionName of string
 type ProjectName = ProjectName of string
@@ -47,6 +47,7 @@ let langCmd lang =
       | CSharp -> "--lange C#"
 
 let projectCmd project =
+
       let gen types proj lang =
             let path = value proj 
             "{type} {lange} {name}"
@@ -55,9 +56,11 @@ let projectCmd project =
                   .Replace("{name}", path)
 
       match project with
-      | Console (lang, proj, out) -> gen "console" proj lang
-      | ClassLib (lang, proj, out) -> gen "classlib" proj lang
-      | X -> ""
+      | Console (lang, proj, out)   -> gen "console" proj lang
+      | ClassLib (lang, proj, out)  -> gen "classlib" proj lang
+      | MsTest (lang, proj, out)    -> gen "mstest" proj lang
+      | XUnit (lang, proj, out)     -> gen "xunit" proj lang 
+      | X                           -> ""
 
 let verbCmd verb =
       match verb with

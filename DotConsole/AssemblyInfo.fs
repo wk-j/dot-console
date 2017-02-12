@@ -1,4 +1,5 @@
-﻿namespace DotConsole.Core
+﻿namespace DotConsole
+
 open System.Reflection
 open System.Runtime.CompilerServices
 

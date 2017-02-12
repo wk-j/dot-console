@@ -3,7 +3,7 @@
 open NUnit.Framework
 open FluentAssertions
 
-open DotConsole.Core.Library
+open DotConsole.Library
 
 [<Test>]
 let shouldCreateNewCmd() =

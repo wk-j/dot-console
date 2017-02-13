@@ -63,11 +63,11 @@ let projectCmd project =
                   .Replace("{out}", path)
 
       match project with
-      | Console (lang,  out)   -> gen "console" lang out
-      | ClassLib (lang,  out)  -> gen "classlib" lang out
-      | MsTest (lang,  out)    -> gen "mstest" lang out
-      | XUnit (lang, out)     -> gen "xunit" lang  out
-      | X                           -> ""
+      | Console (lang,  out) -> gen "console" lang out
+      | ClassLib (lang,  out) -> gen "classlib" lang out
+      | MsTest (lang,  out) -> gen "mstest" lang out
+      | XUnit (lang, out) -> gen "xunit" lang  out
+      | X -> ""
 
 let verbCmd verb =
       match verb with
@@ -76,7 +76,16 @@ let verbCmd verb =
       | List (path, listType) -> ""
 
 
-let color = Konsole.ForegroundColor
+// Color
+let foreColor = ConsoleColor.White 
+let answerColor = ConsoleColor.Yellow
+let titleColor = ConsoleColor.Green
+let promptColor = ConsoleColor.Red
+
+// IO
+let write (x:string) = Konsole.Write(x)
+let writeLine(x: string) = Konsole.WriteLine(x)
+let readLine = Konsole.ReadLine
 
 let setColor color =
       Konsole.ForegroundColor <- color
@@ -93,38 +102,43 @@ let init() =
             | ConsoleKey.Escape  -> Environment.Exit(0)
             | x -> ()
 
-let readLine (info:string) options (defaultValue: Option<string>)   = 
-      color |> setColor
-      ConsoleColor.Green |> setColor
-      Konsole.WriteLine("" + info)
-      color |> setColor
+let readInput (info:string) options (defaultValue: Option<string>)   = 
+
+      setColor titleColor
+      writeLine info
+      setColor foreColor
       let mutable index = 1
       for k, v in options do
-            let msg = sprintf "‣ %-10s %-20s" k v
-            Konsole.WriteLine(msg)
+            let key = sprintf "‣ %-10s" k
+            let desc = sprintf "%-20s" v
+            setColor titleColor
+            write key
+            setColor foreColor
+            writeLine desc
             index <- index + 1
-      Konsole.Write("⤷ ")
-      ConsoleColor.Yellow |> setColor
+      setColor promptColor
+      write("⤷ ")
+      setColor answerColor
       (*
       match defaultValue with
       | Some v -> SendKeys.SendWait(v)
       | None -> ()
       *)
-      Konsole.ReadLine()
+      readLine()
 
 let rec getOutput() =
       let options = []
-      let value = readLine "Output directory" options None
+      let value = readInput "Output directory" options None
       match value with 
       | "" -> getOutput() 
       | x -> OutputDirectory(x)
 
 let rec getLang() =
       let options = [
-            ("C#", "C#")
-            ("F#", "F#")
+            ("C#", "C# langauge")
+            ("F#", "F# language")
       ]
-      let value = readLine "Language" options (Some "C#") 
+      let value = readInput "Language" options (Some "C#") 
       match value with
       | "F#"  -> FSharp 
       | "C#" -> CSharp
@@ -141,13 +155,13 @@ let rec getType() =
             ("web", "Empty ASP.NET Core Web Application")
             ("sln", "Solution File")
       ]
-      let value = readLine "Projec Type" options (Some "console")
+      let value = readInput "Projec Type" options (Some "console")
       match value with
       | "console" -> Console(getLang(), getOutput())
       | "web" -> Web(getOutput())
       | x -> getType() 
 
-let getVerb str =
+let getCommand str =
       let options = [
             ("new", "Initialize .NET projects")
             ("restore", "Restore dependencies specified in the .NET project")
@@ -163,7 +177,7 @@ let getVerb str =
             ("remove", "Remove items from the project")
             ("list", "List items in the project")
       ]
-      let value = readLine "Command" options (Some "new")
+      let value = readInput "Command" options (Some "new")
       match value with
       | "new" -> New(getType())
       | x -> New(getType())

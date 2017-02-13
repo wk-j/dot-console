@@ -11,6 +11,7 @@ type GetValue = GetValue with
     static member ($) (GetValue, (SolutionName v)) = v
     static member ($) (GetValue, (ProjectName v)) = v
     static member ($) (GetValue, (ProjectPath v)) = v
+    static member ($) (GetValue, (OutputDirectory v)) = v
 
 let inline value x : string = GetValue $ x
 
@@ -19,13 +20,13 @@ type Language =
       | CSharp
 
 type Project =
-      | Console of Language * ProjectName * OutputDirectory
-      | ClassLib of Language * ProjectName * OutputDirectory
-      | MsTest of Language * ProjectName * OutputDirectory
-      | XUnit of Language * ProjectName * OutputDirectory
-      | Web of  ProjectName * OutputDirectory
-      | Mvc of Language * ProjectName * OutputDirectory
-      | WebApi of ProjectName * OutputDirectory
+      | Console of Language * OutputDirectory
+      | ClassLib of Language * OutputDirectory
+      | MsTest of Language *  OutputDirectory
+      | XUnit of Language * OutputDirectory
+      | Web of  OutputDirectory
+      | Mvc of Language * OutputDirectory
+      | WebApi of OutputDirectory
       | Sln of SolutionName * OutputDirectory
 
 type Reference =
@@ -43,23 +44,23 @@ type Verb =
 
 let langCmd lang =
       match lang with
-      | FSharp -> "--lang F#"
-      | CSharp -> "--lange C#"
+      | FSharp -> "F#"
+      | CSharp -> "C#"
 
 let projectCmd project =
 
-      let gen types proj lang =
-            let path = value proj 
-            "{type} {lange} {name}"
+      let gen types lang out =
+            let path = value out
+            "{type} --language {lange} --output {out}"
                   .Replace("{type}", types)
                   .Replace("{lange}", langCmd lang)
-                  .Replace("{name}", path)
+                  .Replace("{out}", path)
 
       match project with
-      | Console (lang, proj, out)   -> gen "console" proj lang
-      | ClassLib (lang, proj, out)  -> gen "classlib" proj lang
-      | MsTest (lang, proj, out)    -> gen "mstest" proj lang
-      | XUnit (lang, proj, out)     -> gen "xunit" proj lang 
+      | Console (lang,  out)   -> gen "console" lang out
+      | ClassLib (lang,  out)  -> gen "classlib" lang out
+      | MsTest (lang,  out)    -> gen "mstest" lang out
+      | XUnit (lang, out)     -> gen "xunit" lang  out
       | X                           -> ""
 
 let verbCmd verb =

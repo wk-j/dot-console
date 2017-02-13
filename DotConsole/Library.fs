@@ -109,7 +109,7 @@ let readInput (info:string) options (defaultValue: Option<string>)   =
       setColor foreColor
       let mutable index = 1
       for k, v in options do
-            let key = sprintf "‣ %-10s" k
+            let key = sprintf "‣ %-15s" k
             let desc = sprintf "%-20s" v
             setColor titleColor
             write key
@@ -135,50 +135,52 @@ let rec getOutput() =
 
 let rec getLang() =
       let options = [
-            ("C#", "C# langauge")
-            ("F#", "F# language")
+            ("[c] C#", "C# langauge")
+            ("[f] F#", "F# language")
       ]
       let value = readInput "Language" options (Some "C#") 
       match value with
-      | "F#"  -> FSharp 
-      | "C#" -> CSharp
+      | "f"  -> FSharp 
+      | "c" -> CSharp
       | x -> getLang()
 
 let rec getType() =
       let options = [
-            ("console", "Console Application")
-            ("classlib", "Class library")
-            ("mstest", "Unit Test Project")
-            ("xunit", "xUnit Test Project")
-            ("mvc", "MVC ASP.NET Core Web Application")
-            ("webapi", "Web API ASP.NET Core Web Application")
-            ("web", "Empty ASP.NET Core Web Application")
-            ("sln", "Solution File")
+            ("[c] console", "Console Application")
+            ("[l] classlib", "Class library")
+            ("[t] mstest", "Unit Test Project")
+            ("[x] xunit", "xUnit Test Project")
+            ("[m] mvc", "MVC ASP.NET Core Web Application")
+            ("[a] webapi", "Web API ASP.NET Core Web Application")
+            ("[w] web", "Empty ASP.NET Core Web Application")
+            ("[s] sln", "Solution File")
       ]
       let value = readInput "Projec Type" options (Some "console")
       match value with
-      | "console" -> Console(getLang(), getOutput())
-      | "web" -> Web(getOutput())
+      | "c" | "console" -> Console(getLang(), getOutput())
+      | "w" | "web" -> Web(getOutput())
       | x -> getType() 
 
 let getCommand str =
       let options = [
-            ("new", "Initialize .NET projects")
-            ("restore", "Restore dependencies specified in the .NET project")
-            ("build", "Builds a .NET project")
-            ("publish", "Publishes a .NET project for deployment (including the runtime")
-            ("run", "Compiles and immediately executes a .NET project")
-            ("test", "Runs unit tests using the test runner specified in the project")
-            ("pack", "Creates a NuGet package")
-            ("migrate", "Migrates a project.json based project to a msbuild based project")
-            ("clean", "Clean build output(s)")
-            ("sln", "Modify solution (SLN) files")
-            ("add", "Add items to the project")
-            ("remove", "Remove items from the project")
-            ("list", "List items in the project")
+            ("[n] new", "Initialize .NET projects")
+            ("[r] restore", "Restore dependencies specified in the .NET project")
+            ("[b] build", "Builds a .NET project")
+            ("[p] publish", "Publishes a .NET project for deployment (including the runtime")
+            ("[u] run", "Compiles and immediately executes a .NET project")
+            ("[t] test", "Runs unit tests using the test runner specified in the project")
+            ("[c] pack", "Creates a NuGet package")
+            ("[m] migrate", "Migrates a project.json based project to a msbuild based project")
+            ("[c] clean", "Clean build output(s)")
+            ("[s] sln", "Modify solution (SLN) files")
+            ("[a] add", "Add items to the project")
+            ("[v] remove", "Remove items from the project")
+            ("[l] list", "List items in the project")
       ]
       let value = readInput "Command" options (Some "new")
       match value with
-      | "new" -> New(getType())
+      | "n" | "new" -> New(getType())
+      | "r" | "restore" -> New(getType())
+      | "b" | "build" -> New(getType())
       | x -> New(getType())
 

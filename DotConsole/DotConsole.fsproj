@@ -42,11 +42,11 @@
       <HintPath>..\packages\Colorful.Console.1.0.7\lib\net451\Colorful.Console.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Library.fs" />
-    <Compile Include="Konsole.fs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -7,5 +7,13 @@ Task("Build").Does(() => {
     });
 });
 
+Task("Run")
+    .IsDependentOn("Build")
+    .Does(() => {
+        StartProcess("mono", new ProcessSettings {
+            Arguments = "DotConsole.Cmd/bin/Debug/DotConsole.Cmd.exe"
+        });
+    });
+
 var target = Argument("target", "default");
 RunTarget(target);

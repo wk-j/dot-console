@@ -40,10 +40,21 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="Colorful.Console">
+      <HintPath>..\packages\Colorful.Console.1.0.7\lib\net451\Colorful.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotConsole\DotConsole.fsproj">
+      <Project>{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}</Project>
+      <Name>DotConsole</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(FSharpTargetsPath)" />
 </Project>

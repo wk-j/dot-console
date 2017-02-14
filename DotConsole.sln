@@ -3,6 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "DotConsole", "DotConsole\DotConsole.fsproj", "{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}"
+EndProject
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "DotConsole.Tests", "DotConsole.Tests\DotConsole.Tests.fsproj", "{74DF7A40-2517-49F9-A312-CFB4B827B5DB}"
+EndProject
+Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "DotConsole.Cmd", "DotConsole.Cmd\DotConsole.Cmd.fsproj", "{E8BEE11D-4327-40EE-9060-63C15912F026}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,5 +20,35 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74DF7A40-2517-49F9-A312-CFB4B827B5DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74DF7A40-2517-49F9-A312-CFB4B827B5DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8BEE11D-4327-40EE-9060-63C15912F026}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{E8BEE11D-4327-40EE-9060-63C15912F026}.Debug|Any CPU.Build.0 = Debug|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		$0.StandardHeader = $2
+		$2.Text = 
+		$2.IncludeInNewFiles = True
+		$0.NameConventionPolicy = $3
+		$3.Rules = $4
+		$4.NamingRule = $5
+		$5.Name = Type Parameters
+		$5.AffectedEntity = TypeParameter
+		$5.VisibilityMask = VisibilityMask
+		$5.NamingStyle = PascalCase
+		$5.IncludeInstanceMembers = True
+		$5.IncludeStaticEntities = True
+		$5.RequiredPrefixes = $6
+		$6.String = T
+		$5.RequiredSuffixes = $7
+		$7.String = Exception
 	EndGlobalSection
 EndGlobal

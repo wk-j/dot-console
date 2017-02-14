@@ -4,6 +4,8 @@ open System
 open System.Windows.Forms
 open System.Threading.Tasks
 open DotConsole.Formatter
+open System.IO
+open System.Linq
 
 type SolutionName = SolutionName of string
 type ProjectName = ProjectName of string
@@ -51,6 +53,7 @@ type Verb =
       | New of Project
       | Add of ProjectPath * Reference
       | List of ProjectPath * ListType
+      | Restore of ProjectPath
 
 let langCmd lang =
       match lang with
@@ -80,6 +83,7 @@ let verbCmd verb =
       | New project -> f "dotnet new %s" (projectCmd project)
       | Add (path, reference) -> ""
       | List (path, listType) -> ""
+      | Restore path -> f "dotnet restore %s" (value path)
 
 let rec getOutput() =
       let options = []
@@ -103,7 +107,7 @@ let rec getSolution() =
       let value = readInput "SolutionName" [] None
       value |> SolutionName
 
-let rec getType() =
+let rec getProject() =
       let options = [
             ("c console", "Console Application")
             ("l classlib", "Class library")
@@ -131,7 +135,37 @@ let rec getType() =
       | "a" | "webapi" -> getOutput() |> WebApi
       | "w" | "web" -> getOutput() |> Web
       | "s" | "sln" -> nameAndOutput() |> Sln
-      | x -> getType() 
+      | x -> getProject()
+
+let rec restore() =
+      let dir = System.IO.DirectoryInfo("./")
+      let current = dir.FullName
+
+      let toRelative (path:string) =
+            path.Replace(current, "")
+
+      let getFile(pattern) =
+            dir.GetFiles(pattern, System.IO.SearchOption.AllDirectories)
+                        .Select(fun x -> x.FullName).ToArray() |> Array.map toRelative
+
+      let files = [ 
+             getFile("*.csproj")
+             getFile("*.fsproj")
+             getFile("*.sln") ]  |> Seq.collect id |> Seq.toArray
+
+      let options = files |> Array.map (fun x -> ("", x))
+
+      let value = readInput "Select project / solution to restore packages" options None
+      let ok, number = Int32.TryParse(value)
+
+      if ok then 
+            let index = number - 1
+            if options.Length >= index then
+                  let proj = options.[index] |> snd
+                  Restore(ProjectPath(proj))
+            else restore()
+      else 
+            restore()
 
 let getCommand str =
       let options = [
@@ -159,9 +193,9 @@ let getCommand str =
       let value = readInput "Command" options (Some "new")
       let command = 
             match value with
-            | "n" | "new" -> New(getType()) 
-            | "r" | "restore" -> New(getType()) 
-            | "b" | "build" -> New(getType()) 
-            | x -> New(getType()) 
+            | "n" | "new" -> New(getProject()) 
+            | "r" | "restore" -> restore()
+            | "b" | "build" -> New(getProject()) 
+            | x -> New(getProject()) 
 
       command |> verbCmd |> Valid

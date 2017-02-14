@@ -30,11 +30,16 @@ let write text =
         writeLine text
 
 let readInput (info:string) options (defaultValue: Option<string>)   = 
+      let f = sprintf
       Info(info) |> write
+      let mutable index = 1
       for k, v in options do
-            let key = sprintf " %-15s" k
-            let desc = sprintf "%-20s" v
+            let key = 
+                if k = "" then f " %-2d" index
+                else f " %-15s" k
+            let desc = f "%-20s" v
             Key(key) |> write
             Description(desc) |> write
+            index <- index + 1
       Prompt("➟ ") |> write
       Console.ReadLine()

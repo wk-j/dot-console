@@ -10,7 +10,7 @@ let main argv =
             let command = getCommand()
             match command with
             | Valid cmd ->
-                  sprintf "Executing command ➯ %s"  cmd |> writeLine
+                  sprintf "%s" cmd |> writeLine
                   let args = cmd.Replace("dotnet", "")
                   executeCommand "dotnet" args 
             | Cancel

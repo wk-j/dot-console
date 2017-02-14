@@ -3,8 +3,7 @@
 open System
 open System.Windows.Forms
 open System.Threading.Tasks
-
-type Konsole = System.Console
+open DotConsole.Formatter
 
 type SolutionName = SolutionName of string
 type ProjectName = ProjectName of string
@@ -59,76 +58,28 @@ let langCmd lang =
       | CSharp -> "C#"
 
 let projectCmd project =
-
+      let f = sprintf
       let gen types lang out =
             let path = value out
             let language = langCmd lang
-            sprintf "%s --language %s --output %s" types language path
+            f "%s --language %s --output %s" types language path
 
       match project with
       | Console (lang,  out) -> gen "console" lang out
       | ClassLib (lang,  out) -> gen "classlib" lang out
       | MsTest (lang,  out) -> gen "mstest" lang out
       | XUnit (lang, out) -> gen "xunit" lang  out
-      | X -> ""
+      | Mvc (lang, out) -> gen "mvc" lang out
+      | Sln (sln, out) -> f "--name %s --output %s" (value sln) (value out)
+      | Web (out) -> f "--output %s" (value out)
+      | WebApi (out) -> f "--output %s" (value out)
 
 let verbCmd verb =
+      let f = sprintf
       match verb with
-      | New project -> sprintf "dotnet new %s" (projectCmd project)
+      | New project -> f "dotnet new %s" (projectCmd project)
       | Add (path, reference) -> ""
       | List (path, listType) -> ""
-
-
-// Color
-let foreColor = ConsoleColor.White 
-let answerColor = ConsoleColor.Yellow
-let titleColor = ConsoleColor.Green
-let promptColor = ConsoleColor.Red
-
-// IO
-let write (x:string) = Konsole.Write(x)
-let writeLine(x: string) = Konsole.WriteLine(x)
-let readLine = Konsole.ReadLine
-
-
-let setColor color =
-      Konsole.ForegroundColor <- color
-
-let init() =
-        let mutable key = new ConsoleKeyInfo();
-
-        while true do
-            key <- Console.ReadKey(true)
-
-            match key.Key with
-            | ConsoleKey.UpArrow -> SendKeys.Send("XX")
-            | ConsoleKey.DownArrow -> SendKeys.Send("YY")
-            | ConsoleKey.Escape  -> Environment.Exit(0)
-            | x -> ()
-
-let readInput (info:string) options (defaultValue: Option<string>)   = 
-
-      setColor titleColor
-      writeLine info
-      setColor foreColor
-      let mutable index = 1
-      for k, v in options do
-            let key = sprintf " %-15s" k
-            let desc = sprintf "%-20s" v
-            setColor titleColor
-            write key
-            setColor foreColor
-            writeLine desc
-            index <- index + 1
-      setColor promptColor
-      write("➟ ")
-      setColor answerColor
-      (*
-      match defaultValue with
-      | Some v -> SendKeys.SendWait(v)
-      | None -> ()
-      *)
-      readLine()
 
 let rec getOutput() =
       let options = []
@@ -148,6 +99,10 @@ let rec getLang() =
       | "c" -> CSharp
       | x -> getLang()
 
+let rec getSolution() =
+      let value = readInput "SolutionName" [] None
+      value |> SolutionName
+
 let rec getType() =
       let options = [
             ("c console", "Console Application")
@@ -160,9 +115,22 @@ let rec getType() =
             ("s sln", "Solution File")
       ]
       let value = readInput "Projec Type" options (Some "console")
+
+      let langAndOut() =
+            (getLang(), getOutput())
+
+      let nameAndOutput() =
+            (getSolution(), getOutput())
+
       match value with
-      | "c" | "console" -> Console(getLang(), getOutput())
-      | "w" | "web" -> Web(getOutput())
+      | "c" | "console" -> langAndOut() |> Console
+      | "t" | "mstest" -> langAndOut() |> MsTest 
+      | "l" | "classlib" -> langAndOut() |> ClassLib
+      | "x" | "xunit" -> langAndOut() |> XUnit
+      | "m" | "mvc" -> langAndOut() |> Mvc
+      | "a" | "webapi" -> getOutput() |> WebApi
+      | "w" | "web" -> getOutput() |> Web
+      | "s" | "sln" -> nameAndOutput() |> Sln
       | x -> getType() 
 
 let getCommand str =

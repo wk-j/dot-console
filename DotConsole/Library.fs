@@ -21,6 +21,11 @@ type GetValue = GetValue with
 
 let inline value x : string = GetValue $ x
 
+type InputStatus =
+      | Valid of string
+      | Cancel
+      | Quit
+
 type Language =
       | FSharp
       | CSharp
@@ -57,10 +62,8 @@ let projectCmd project =
 
       let gen types lang out =
             let path = value out
-            "{type} --language {lange} --output {out}"
-                  .Replace("{type}", types)
-                  .Replace("{lange}", langCmd lang)
-                  .Replace("{out}", path)
+            let language = langCmd lang
+            sprintf "%s --language %s --output %s" types language path
 
       match project with
       | Console (lang,  out) -> gen "console" lang out
@@ -87,6 +90,7 @@ let write (x:string) = Konsole.Write(x)
 let writeLine(x: string) = Konsole.WriteLine(x)
 let readLine = Konsole.ReadLine
 
+
 let setColor color =
       Konsole.ForegroundColor <- color
 
@@ -109,7 +113,7 @@ let readInput (info:string) options (defaultValue: Option<string>)   =
       setColor foreColor
       let mutable index = 1
       for k, v in options do
-            let key = sprintf "‣ %-15s" k
+            let key = sprintf " %-15s" k
             let desc = sprintf "%-20s" v
             setColor titleColor
             write key
@@ -117,7 +121,7 @@ let readInput (info:string) options (defaultValue: Option<string>)   =
             writeLine desc
             index <- index + 1
       setColor promptColor
-      write("⤷ ")
+      write("➟ ")
       setColor answerColor
       (*
       match defaultValue with
@@ -135,8 +139,8 @@ let rec getOutput() =
 
 let rec getLang() =
       let options = [
-            ("[c] C#", "C# langauge")
-            ("[f] F#", "F# language")
+            ("c C#", "C# langauge")
+            ("f F#", "F# language")
       ]
       let value = readInput "Language" options (Some "C#") 
       match value with
@@ -146,14 +150,14 @@ let rec getLang() =
 
 let rec getType() =
       let options = [
-            ("[c] console", "Console Application")
-            ("[l] classlib", "Class library")
-            ("[t] mstest", "Unit Test Project")
-            ("[x] xunit", "xUnit Test Project")
-            ("[m] mvc", "MVC ASP.NET Core Web Application")
-            ("[a] webapi", "Web API ASP.NET Core Web Application")
-            ("[w] web", "Empty ASP.NET Core Web Application")
-            ("[s] sln", "Solution File")
+            ("c console", "Console Application")
+            ("l classlib", "Class library")
+            ("t mstest", "Unit Test Project")
+            ("x xunit", "xUnit Test Project")
+            ("m mvc", "MVC ASP.NET Core Web Application")
+            ("a webapi", "Web API ASP.NET Core Web Application")
+            ("w web", "Empty ASP.NET Core Web Application")
+            ("s sln", "Solution File")
       ]
       let value = readInput "Projec Type" options (Some "console")
       match value with
@@ -163,24 +167,33 @@ let rec getType() =
 
 let getCommand str =
       let options = [
-            ("[n] new", "Initialize .NET projects")
-            ("[r] restore", "Restore dependencies specified in the .NET project")
-            ("[b] build", "Builds a .NET project")
-            ("[p] publish", "Publishes a .NET project for deployment (including the runtime")
-            ("[u] run", "Compiles and immediately executes a .NET project")
-            ("[t] test", "Runs unit tests using the test runner specified in the project")
-            ("[c] pack", "Creates a NuGet package")
-            ("[m] migrate", "Migrates a project.json based project to a msbuild based project")
-            ("[c] clean", "Clean build output(s)")
-            ("[s] sln", "Modify solution (SLN) files")
-            ("[a] add", "Add items to the project")
-            ("[v] remove", "Remove items from the project")
-            ("[l] list", "List items in the project")
+            ("n new", "Initialize .NET projects")
+            ("r restore", "Restore dependencies specified in the .NET project")
+            ("b build", "Builds a .NET project")
+            ("p publish", "Publishes a .NET project for deployment (including the runtime")
+            ("u run", "Compiles and immediately executes a .NET project")
+            ("t test", "Runs unit tests using the test runner specified in the project")
+            ("c pack", "Creates a NuGet package")
+            ("m migrate", "Migrates a project.json based project to a msbuild based project")
+            ("c clean", "Clean build output(s)")
+            ("s sln", "Modify solution (SLN) files")
+            ("a add", "Add items to the project")
+            ("v remove", "Remove items from the project")
+            ("l list", "List items in the project")
       ]
-      let value = readInput "Command" options (Some "new")
-      match value with
-      | "n" | "new" -> New(getType())
-      | "r" | "restore" -> New(getType())
-      | "b" | "build" -> New(getType())
-      | x -> New(getType())
 
+      let confirm msg =
+            let confirm = readInput "Press Enter to confirm (cc: Cancel) (qq:Quit)" [] None
+            if confirm.EndsWith("cc") then Cancel
+            elif confirm.EndsWith("qq") then Quit
+            else Valid confirm
+
+      let value = readInput "Command" options (Some "new")
+      let command = 
+            match value with
+            | "n" | "new" -> New(getType()) 
+            | "r" | "restore" -> New(getType()) 
+            | "b" | "build" -> New(getType()) 
+            | x -> New(getType()) 
+
+      command |> verbCmd |> Valid

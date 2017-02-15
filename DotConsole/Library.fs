@@ -54,6 +54,7 @@ type Verb =
       | Add of ProjectPath * Reference
       | List of ProjectPath * ListType
       | Restore of ProjectPath
+      | Build of ProjectPath
 
 let langCmd lang =
       match lang with
@@ -83,6 +84,7 @@ let verbCmd verb =
       | New project -> f "dotnet new %s" (projectCmd project)
       | Add (path, reference) -> ""
       | List (path, listType) -> ""
+      | Build path -> f "dotnet build %s" (value path)
       | Restore path -> f "dotnet restore %s" (value path)
 
 let rec getOutput() =
@@ -137,7 +139,7 @@ let rec getProject() =
       | "s" | "sln" -> nameAndOutput() |> Sln
       | x -> getProject()
 
-let rec restore() =
+let getProjects() =
       let dir = System.IO.DirectoryInfo("./")
       let current = dir.FullName
 
@@ -148,24 +150,38 @@ let rec restore() =
             dir.GetFiles(pattern, System.IO.SearchOption.AllDirectories)
                         .Select(fun x -> x.FullName).ToArray() |> Array.map toRelative
 
-      let files = [ 
-             getFile("*.csproj")
-             getFile("*.fsproj")
-             getFile("*.sln") ]  |> Seq.collect id |> Seq.toArray
+      let files = 
+            [| getFile("*.csproj")
+               getFile("*.fsproj")
+               getFile("*.sln") |]  |> Array.collect id 
+      (files)
 
+let getSelectProject(title: string, files) =
       let options = files |> Array.map (fun x -> ("", x))
-
-      let value = readInput "Select project / solution to restore packages" options None
+      let value = readInput title options None
       let ok, number = Int32.TryParse(value)
-
       if ok then 
             let index = number - 1
             if options.Length >= index then
                   let proj = options.[index] |> snd
-                  Restore(ProjectPath(proj))
-            else restore()
+                  Some <| ProjectPath(proj)
+            else None
       else 
-            restore()
+            None
+
+let rec build() =
+      let files = getProjects()
+      let project = getSelectProject("Select project / solution to restore packages", files)
+      match project with 
+      | Some x -> Build(x)
+      | None -> build()
+
+let rec restore() =
+      let files = getProjects()
+      let project = getSelectProject("Select project / solution to restore packages", files)
+      match project with 
+      | Some x -> Restore(x)
+      | None -> restore()
 
 let getCommand str =
       let options = [
@@ -195,7 +211,7 @@ let getCommand str =
             match value with
             | "n" | "new" -> New(getProject()) 
             | "r" | "restore" -> restore()
-            | "b" | "build" -> New(getProject()) 
+            | "b" | "build" -> build() 
             | x -> New(getProject()) 
 
       command |> verbCmd |> Valid

@@ -59,6 +59,7 @@ type Verb =
       | Build of ProjectPath
       | Run of ProjectPath
       | Clean of ProjectPath
+      | Test of ProjectPath
       | Skip
 
 let langCmd lang =
@@ -98,6 +99,7 @@ let convertToCommandLine verb =
       | Restore path -> f "dotnet restore %s" (value path) |> Some
       | Run path -> f "dotnet run --project %s" (value path) |> Some
       | Clean path -> f "dotnet clean %s" (value path) |> Some
+      | Test path -> f "dotnet test %s" (value path) |> Some
       | Skip -> None
 
 let rec getOutput() =
@@ -210,12 +212,16 @@ let rec cleanCommand() =
       | Some x -> Clean(x)
       | None -> cleanCommand()
 
-let rec projectPath() =
+let rec projectPath title =
       let files = getProjects()
-      let project = selectProject("Select project to add reference/package", files)
+      let project = selectProject(title, files)
       match project with
       | Some x -> x
-      | None -> projectPath() 
+      | None -> projectPath title 
+
+let rec testCommand() =
+      let project = projectPath "Select project to test"
+      Test(project)
 
 let rec referenceCommand() =
       let options = [
@@ -279,6 +285,7 @@ let getCommand str =
             | "a" | "add" -> addCommand()
             | "c" | "clean" -> cleanCommand()
             | "v" | "remove " -> removeCommand()
+            | "t" | "test" -> testCommand()
             | x -> Skip
 
       let cmd = command |> convertToCommandLine

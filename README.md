@@ -29,3 +29,4 @@
 - [ ] dotnet list
 - [x] dotnet add
 - [x] dotnet remove
+- [x] dotnet test

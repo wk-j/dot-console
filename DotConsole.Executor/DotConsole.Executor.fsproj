@@ -36,7 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -44,6 +43,16 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DotConsole\DotConsole.fsproj">
+      <Project>{508BA0E0-F1FA-46AA-ABC6-B53F7A3CB8A7}</Project>
+      <Name>DotConsole</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotConsole.Cmd\DotConsole.Cmd.fsproj">
+      <Project>{E8BEE11D-4327-40EE-9060-63C15912F026}</Project>
+      <Name>DotConsole.Cmd</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(FSharpTargetsPath)" />
 </Project>

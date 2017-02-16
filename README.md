@@ -12,8 +12,9 @@
     - [x] sln
 - [x] dotnet restore
 - [x] dotnet build
+- [x] dotnet run
+- [x] dotnet clean
 - [ ] dotnet migrate
 - [ ] dotnet list
-- [ ] dotnet clean
 - [ ] dotnet add
 - [ ] dotnet remove

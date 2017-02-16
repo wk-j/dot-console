@@ -1,6 +1,6 @@
 {
   "name": "dot-console",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "Interactive Console for .NET Core command-line",
   "main": "index.js",
   "scripts": {
@@ -11,11 +11,8 @@
     "url": "git+https://github.com/wk-j/dot-console.git"
   },
   "bin": {
-    "dot-console": "mono ./DotnetConsole.Cmd/bin/Debug/DotNetConsole.Cmd.exe"
+    "dot-console": "./index.js"
   },
-  "files": [
-    "./DotNetConsole.Cmd/bin/Debug/*.*"
-  ],
   "keywords": [
     "dotnet",
     "console",
@@ -26,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/wk-j/dot-console/issues"
   },
-  "homepage": "https://github.com/wk-j/dot-console#readme"
+  "homepage": "https://github.com/wk-j/dot-console#readme",
+  "dependencies": {
+    "shelljs": "^0.7.6"
+  }
 }

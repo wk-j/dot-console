@@ -1,6 +1,8 @@
 # Autosave files
 *~
 
+node_modules
+
 tools
 
 temp

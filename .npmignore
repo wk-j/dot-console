@@ -1,0 +1,14 @@
+packages
+temp
+DotConsole
+DotCosnole.Cmd
+DotConsole.Tests
+tools
+**/*.cs
+**/*.fs
+obj
+*.sln
+*.fsproj
+*.csproj
+build.*
+*.userprefs

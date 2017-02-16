@@ -1,0 +1,30 @@
+{
+  "name": "dot-console",
+  "version": "0.0.1",
+  "description": "Interactive Console for .NET Core command-line",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wk-j/dot-console.git"
+  },
+  "bin": {
+    "dot-console": "mono ./DotnetConsole.Cmd/bin/Debug/DotNetConsole.Cmd.exe"
+  },
+  "files": [
+    "./DotNetConsole.Cmd/bin/Debug/*.*"
+  ],
+  "keywords": [
+    "dotnet",
+    "console",
+    "dotnet-cli"
+  ],
+  "author": "wk <somnuk.wk@gmail.com> (https://github.com/wk-j)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wk-j/dot-console/issues"
+  },
+  "homepage": "https://github.com/wk-j/dot-console#readme"
+}

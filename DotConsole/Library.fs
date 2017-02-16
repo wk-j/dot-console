@@ -59,6 +59,7 @@ type Verb =
       | Build of ProjectPath
       | Run of ProjectPath
       | Clean of ProjectPath
+      | Skip
 
 let langCmd lang =
       match lang with
@@ -86,17 +87,18 @@ let getReference = function
       | PackageReference package -> sprintf "package %s" (value package)
       | ProjectReference project -> sprintf "reference %s" (value project)
 
-let verbCmd verb =
+let convertToCommandLine verb =
       let f = sprintf
       match verb with
-      | New project -> f "dotnet new %s" (projectCmd project)
-      | Add (path, reference) -> f "dotnet add %s %s" (value path) (getReference reference)
-      | Remove (path, reference) -> f "dotnet remove %s %s" (value path) (getReference reference)
-      | List (path, listType) -> ""
-      | Build path -> f "dotnet build %s" (value path)
-      | Restore path -> f "dotnet restore %s" (value path)
-      | Run path -> f "dotnet run --project %s" (value path)
-      | Clean path -> f "dotnet clean %s" (value path)
+      | New project -> f "dotnet new %s" (projectCmd project) |> Some
+      | Add (path, reference) -> f "dotnet add %s %s" (value path) (getReference reference) |> Some
+      | Remove (path, reference) -> f "dotnet remove %s %s" (value path) (getReference reference) |> Some
+      | List (path, listType) -> "" |> Some
+      | Build path -> f "dotnet build %s" (value path) |> Some
+      | Restore path -> f "dotnet restore %s" (value path) |> Some
+      | Run path -> f "dotnet run --project %s" (value path) |> Some
+      | Clean path -> f "dotnet clean %s" (value path) |> Some
+      | Skip -> None
 
 let rec getOutput() =
       let options = []
@@ -277,6 +279,9 @@ let getCommand str =
             | "a" | "add" -> addCommand()
             | "c" | "clean" -> cleanCommand()
             | "v" | "remove " -> removeCommand()
-            | x -> restoreCommand() 
+            | x -> Skip
 
-      command |> verbCmd |> Valid
+      let cmd = command |> convertToCommandLine
+      match cmd with
+      | Some x -> Valid(x)
+      | None -> Cancel

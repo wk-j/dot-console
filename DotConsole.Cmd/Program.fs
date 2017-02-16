@@ -13,7 +13,7 @@ let main argv =
                   sprintf "%s" cmd |> writeLine
                   let args = cmd.Replace("dotnet", "")
                   executeCommand "dotnet" args 
-            | Cancel
+            | Cancel -> ()
             | Quit -> Environment.Exit(0)
       0
 

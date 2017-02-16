@@ -1,4 +1,15 @@
-## Interactive Console for .NET Core command-line
+## Interactive console for .NET Core command-line
+
+![](Images/DotConsole.png)
+
+## Installation
+
+> `npm install -g dot-console`
+
+## Usages
+
+- Start console `dot-console` 
+- Exit - `CTRL + c`
 
 ## Features
 

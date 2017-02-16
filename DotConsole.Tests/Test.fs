@@ -10,5 +10,9 @@ let shouldCreateNewCmd() =
       let project =  Console(FSharp, OutputDirectory("Hello"))
       let verb = New(project)
 
-      let cmd = verbCmd verb
-      cmd.Should().Be("dotnet new console --language F# --output Hello", "") |> ignore
+      let cmd = convertToCommandLine verb
+      match cmd with
+      | Some cmd ->
+            cmd.Should().Be("dotnet new console --language F# --output Hello", "") |> ignore
+      | None -> ()
+

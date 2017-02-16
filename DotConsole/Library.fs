@@ -53,6 +53,7 @@ type ListType =
 type Verb =
       | New of Project
       | Add of ProjectPath * Reference
+      | Remove of ProjectPath * Reference
       | List of ProjectPath * ListType
       | Restore of ProjectPath
       | Build of ProjectPath
@@ -90,6 +91,7 @@ let verbCmd verb =
       match verb with
       | New project -> f "dotnet new %s" (projectCmd project)
       | Add (path, reference) -> f "dotnet add %s %s" (value path) (getReference reference)
+      | Remove (path, reference) -> f "dotnet remove %s %s" (value path) (getReference reference)
       | List (path, listType) -> ""
       | Build path -> f "dotnet build %s" (value path)
       | Restore path -> f "dotnet restore %s" (value path)
@@ -216,7 +218,7 @@ let rec projectPath() =
 let rec referenceCommand() =
       let options = [
             ("r reference", "Add reference project")
-            ("p package", "Add nuget pack")
+            ("p package", "Add nuget package")
       ]
 
       let reference = readInput "Select reference type" options None
@@ -234,6 +236,13 @@ let rec addCommand() =
       match project with
       | Some x -> Add(x, referenceCommand())
       | None -> addCommand() 
+
+let rec removeCommand() =
+      let files = getProjects()
+      let project = selectProject("Select project to remove reference/package", files)
+      match project with
+      | Some x -> Remove(x, referenceCommand())
+      | None -> removeCommand() 
 
 let getCommand str =
       let options = [
@@ -267,6 +276,7 @@ let getCommand str =
             | "u" | "run" -> runCommand()
             | "a" | "add" -> addCommand()
             | "c" | "clean" -> cleanCommand()
+            | "v" | "remove " -> removeCommand()
             | x -> restoreCommand() 
 
       command |> verbCmd |> Valid

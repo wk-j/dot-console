@@ -16,5 +16,5 @@
 - [x] dotnet clean
 - [ ] dotnet migrate
 - [ ] dotnet list
-- [ ] dotnet add
-- [ ] dotnet remove
+- [x] dotnet add
+- [x] dotnet remove

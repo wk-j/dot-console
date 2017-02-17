@@ -7,8 +7,6 @@ Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "DotConsole", "DotConsole\Do
 EndProject
 Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "DotConsole.Tests", "DotConsole.Tests\DotConsole.Tests.fsproj", "{74DF7A40-2517-49F9-A312-CFB4B827B5DB}"
 EndProject
-Project("{f2a71f9b-5d33-465a-a702-920d77279786}") = "DotConsole.Cmd", "DotConsole.Cmd\DotConsole.Cmd.fsproj", "{E8BEE11D-4327-40EE-9060-63C15912F026}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -1,6 +1,5 @@
 packages
 temp
-DotConsole
 DotConsole.Tests
 tools
 **/*.cs

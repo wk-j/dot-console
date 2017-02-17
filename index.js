@@ -3,7 +3,7 @@
 var spawn = require('child_process').spawn;
 var process = require("process");
 
-var file = __dirname + "/DotConsole.Cmd/bin/Debug/DotConsole.Cmd.exe";
+var file = __dirname + "/DotConsole/bin/Debug/DotConsole.exe";
 
 if(process.platform === "win32") {
     spawn(file, [], { stdio: "inherit"});

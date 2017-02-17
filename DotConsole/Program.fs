@@ -1,4 +1,6 @@
-﻿open DotConsole.Library
+﻿module DotConsole.Program
+
+open DotConsole.Library
 open DotConsole.Executor
 open System
 

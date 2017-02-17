@@ -12,14 +12,16 @@ type ProjectName = ProjectName of string
 type OutputDirectory = OutputDirectory of string
 type ProjectPath = ProjectPath of string
 type SolutionPath = SolutionPath of string
-type PackageName = PackageName of string
+type Version = Version of string
+type PackageName = PackageName of string 
 
 type GetValue = GetValue with
     static member ($) (GetValue, (SolutionName v)) = v
     static member ($) (GetValue, (ProjectName v)) = v
     static member ($) (GetValue, (ProjectPath v)) = v
     static member ($) (GetValue, (OutputDirectory v)) = v
-    static member ($) (GetValue, (PackageName v)) = v
+    static member ($) (GetValue, (Version v)) =v
+    static member ($) (GetValue, (PackageName v)) =v
 
 let inline value x : string = GetValue $ x
 
@@ -44,11 +46,11 @@ type Project =
 
 type Reference =
       | ProjectReference of ProjectPath
-      | PackageReference of PackageName
+      | PackageReference of PackageName * Version option
 
 type ListType =
       | Reference
-      | Package
+      | Package of Version option
 
 type Verb =
       | New of Project
@@ -85,7 +87,10 @@ let projectCmd project =
       | WebApi (out) -> f "--output %s" (value out)
 
 let getReference = function
-      | PackageReference package -> sprintf "package %s" (value package)
+      | PackageReference (package, version) -> 
+            match version with
+            | Some version -> sprintf "package %s --version %s" (value package) (value version) 
+            | None -> sprintf "package %s" (value package)
       | ProjectReference project -> sprintf "reference %s" (value project)
 
 let convertToCommandLine verb =
@@ -237,7 +242,15 @@ let rec referenceCommand() =
             project |> ProjectReference
       | "p" -> 
             let package = readInput "Enter package name" [] None
-            PackageName(package) |> PackageReference
+            let token = System.Text.RegularExpressions.Regex.Split(package, "\\s")
+            match token.Length > 1 with
+            | true ->
+                  let package = token.[0] |> PackageName
+                  let version = token.[1]
+                  PackageReference(package, Version(version) |> Some) 
+            | false -> 
+                  let package = PackageName(package)
+                  PackageReference(package, None) 
       | x -> referenceCommand()
 
 let rec addCommand() =

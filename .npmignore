@@ -1,7 +1,6 @@
 packages
 temp
 DotConsole
-DotCosnole.Cmd
 DotConsole.Tests
 tools
 **/*.cs
@@ -12,3 +11,4 @@ obj
 *.csproj
 build.*
 *.userprefs
+*.log

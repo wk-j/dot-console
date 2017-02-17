@@ -1,6 +1,6 @@
 {
   "name": "dot-console",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Interactive Console for .NET Core command-line",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,5 @@
     "url": "https://github.com/wk-j/dot-console/issues"
   },
   "homepage": "https://github.com/wk-j/dot-console#readme",
-  "dependencies": {
-    "shelljs": "^0.7.6"
-  }
+  "dependencies": {}
 }

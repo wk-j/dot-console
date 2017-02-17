@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 
-var shell = require("shelljs");
 var spawn = require('child_process').spawn;
+var process = require("process");
 
-var file = __dirname + "/DotConsole.Executor/bin/Debug/DotConsole.Executor.exe";
-//shell.exec("mono " + file);
+var file = __dirname + "/DotConsole.Cmd/bin/Debug/DotConsole.Cmd.exe";
 
-spawn("mono", [file] , {stdio: 'inherit'});
+if(process.platform === "win32") {
+    spawn(file, [], { stdio: "inherit"});
+} else {
+    spawn("mono", [file] , {stdio: "inherit"});
+}

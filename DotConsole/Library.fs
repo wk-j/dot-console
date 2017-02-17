@@ -232,7 +232,9 @@ let rec referenceCommand() =
       let reference = readInput "Select reference type" options None
 
       match reference with
-      | "r" -> ProjectPath(reference) |> ProjectReference
+      | "r" -> 
+            let project = projectPath("Select project")
+            project |> ProjectReference
       | "p" -> 
             let package = readInput "Enter package name" [] None
             PackageName(package) |> PackageReference

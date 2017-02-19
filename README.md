@@ -10,13 +10,11 @@
 
 - Start console 
 
-    ```
-    dot-console
-    ```
+  > `dot-console`
 
 - Exit `CTRL + c`
 
-## Feature
+## Features
 
 - [x] dotnet new
     - [x] console

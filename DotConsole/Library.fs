@@ -23,7 +23,7 @@ type GetValue = GetValue with
     static member ($) (GetValue, (Version v)) =v
     static member ($) (GetValue, (PackageName v)) =v
 
-let inline value x : string = GetValue $ x
+let inline private value x : string = GetValue $ x
 
 type InputStatus =
       | Valid of string
@@ -64,12 +64,12 @@ type Verb =
       | Test of ProjectPath
       | Skip
 
-let langCmd lang =
+let private langCmd lang =
       match lang with
       | FSharp -> "F#"
       | CSharp -> "C#"
 
-let projectCmd project =
+let private projectCmd project =
       let f = sprintf
       let gen types lang out =
             let path = value out
@@ -86,7 +86,7 @@ let projectCmd project =
       | Web (out) -> f "--output %s" (value out)
       | WebApi (out) -> f "--output %s" (value out)
 
-let getReference = function
+let private getReference = function
       | PackageReference (package, version) -> 
             match version with
             | Some version -> sprintf "package %s --version %s" (value package) (value version) 
@@ -107,14 +107,14 @@ let convertToCommandLine verb =
       | Test path -> f "dotnet test %s" (value path) |> Some
       | Skip -> None
 
-let rec getOutput() =
+let rec private getOutput() =
       let options = []
       let value = readInput "Output directory" options None
       match value with 
       | "" -> getOutput() 
       | x -> OutputDirectory(x)
 
-let rec getLang() =
+let rec private getLang() =
       let options = [
             ("c C#", "C# langauge")
             ("f F#", "F# language")
@@ -125,11 +125,11 @@ let rec getLang() =
       | "c" -> CSharp
       | x -> getLang()
 
-let rec getSolution() =
+let rec private getSolution() =
       let value = readInput "SolutionName" [] None
       value |> SolutionName
 
-let rec getProject() =
+let rec private getProject() =
       let options = [
             ("c console", "Console Application")
             ("l classlib", "Class library")
@@ -159,7 +159,7 @@ let rec getProject() =
       | "s" | "sln" -> nameAndOutput() |> Sln
       | x -> getProject()
 
-let getProjects() =
+let private getProjects() =
       let dir = System.IO.DirectoryInfo("./")
       let current = dir.FullName
 
@@ -176,7 +176,7 @@ let getProjects() =
                getFile("*.sln") |]  |> Array.collect id 
       (files)
 
-let selectProject(title: string, files) =
+let private selectProject(title: string, files) =
       let options = files |> Array.map (fun x -> ("", x))
       let value = readInput title options None
       let ok, number = Int32.TryParse(value)
@@ -189,46 +189,46 @@ let selectProject(title: string, files) =
       else 
             None
 
-let rec buildCommand() =
+let rec private buildCommand() =
       let files = getProjects()
       let project = selectProject("Select project / solution to restore packages", files)
       match project with 
       | Some x -> Build(x)
       | None -> buildCommand()
 
-let rec restoreCommand() =
+let rec private restoreCommand() =
       let files = getProjects()
       let project = selectProject("Select project / solution to restore packages", files)
       match project with 
       | Some x -> Restore(x)
       | None -> restoreCommand()
 
-let rec runCommand() =
+let rec private runCommand() =
       let files = getProjects()
       let project = selectProject("Select project to run", files)
       match project with 
       | Some x -> Run(x)
       | None -> runCommand()
 
-let rec cleanCommand() =
+let rec private cleanCommand() =
       let files = getProjects()
       let project = selectProject("Select project to clean", files)
       match project with
       | Some x -> Clean(x)
       | None -> cleanCommand()
 
-let rec projectPath title =
+let rec private projectPath title =
       let files = getProjects()
       let project = selectProject(title, files)
       match project with
       | Some x -> x
       | None -> projectPath title 
 
-let rec testCommand() =
+let rec private testCommand() =
       let project = projectPath "Select project to test"
       Test(project)
 
-let rec referenceCommand() =
+let rec private referenceCommand() =
       let options = [
             ("r reference", "Add reference project")
             ("p package", "Add nuget package")
@@ -253,14 +253,14 @@ let rec referenceCommand() =
                   PackageReference(package, None) 
       | x -> referenceCommand()
 
-let rec addCommand() =
+let rec private addCommand() =
       let files = getProjects()
       let project = selectProject("Select project to add reference/package", files)
       match project with
       | Some x -> Add(x, referenceCommand())
       | None -> addCommand() 
 
-let rec removeCommand() =
+let rec private removeCommand() =
       let files = getProjects()
       let project = selectProject("Select project to remove reference/package", files)
       match project with
@@ -303,7 +303,7 @@ let getCommand str =
             | "t" | "test" -> testCommand()
             | x -> Skip
 
-      let cmd = command |> convertToCommandLine
+      let cmd = convertToCommandLine(command)
       match cmd with
       | Some x -> Valid(x)
       | None -> Cancel

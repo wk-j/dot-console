@@ -1,6 +1,6 @@
 {
   "name": "dot-console",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Interactive Console for .NET Core command-line",
   "main": "index.js",
   "scripts": {

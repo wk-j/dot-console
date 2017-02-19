@@ -3,11 +3,11 @@ module DotConsole.Executor
 open System
 open System.Diagnostics
 
-type Message =
+type private Message =
     | Info of string
     | Error of string
 
-let write message = 
+let private write message = 
 
     let write (msg:string) color =
         if not <| String.IsNullOrEmpty(msg) then
@@ -19,12 +19,13 @@ let write message =
     | Error str ->  write str ConsoleColor.Red
 
 let executeCommand cmd args=
+    Console.ForegroundColor <- ConsoleColor.White
     let info = ProcessStartInfo()
     info.FileName <- cmd
     info.Arguments <- args
-    info.RedirectStandardOutput <- true
-    info.UseShellExecute <- false
-    info.RedirectStandardError <- true
+    //info.RedirectStandardOutput <- true
+    info.UseShellExecute <- true
+    //info.RedirectStandardError <- true
 
     let outputHandler (s:DataReceivedEventArgs) = 
         s.Data |> Info |> write
@@ -36,10 +37,10 @@ let executeCommand cmd args=
     ps.StartInfo <- info
     ps.Start() |> ignore
     
-    ps.OutputDataReceived.Add(outputHandler)
-    ps.BeginOutputReadLine()
+    //ps.OutputDataReceived.Add(outputHandler)
+    //ps.BeginOutputReadLine()
 
-    ps.ErrorDataReceived.Add(errorHandler)
-    ps.BeginErrorReadLine()
+    //ps.ErrorDataReceived.Add(errorHandler)
+    //ps.BeginErrorReadLine()
 
     ps.WaitForExit() |> ignore

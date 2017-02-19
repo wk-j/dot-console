@@ -2,15 +2,15 @@ module DotConsole.Formatter
 
 open System
 
-type Konsole = System.Console
+type private Konsole = System.Console
 
-type Text =
+type private Text =
       | Info of string
       | Prompt of string
       | Key of string
       | Description of string
 
-let write text =
+let private write text =
     let setColor color = Konsole.ForegroundColor <- color
     let writeLine x = Konsole.WriteLine(x.ToString())
     let write x = Konsole.Write(x.ToString())

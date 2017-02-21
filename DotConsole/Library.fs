@@ -52,6 +52,10 @@ type ListType =
       | Reference
       | Package of Version option
 
+type SolutionVerb =
+      | AddProject
+      | RemoveProject
+
 type Verb =
       | New of Project
       | Add of ProjectPath * Reference
@@ -62,6 +66,7 @@ type Verb =
       | Run of ProjectPath
       | Clean of ProjectPath
       | Test of ProjectPath
+      | Solution of ProjectPath * SolutionVerb * ProjectPath
       | Skip
 
 let private langCmd lang =
@@ -82,9 +87,9 @@ let private projectCmd project =
       | MsTest (lang,  out) -> gen "mstest" lang out
       | XUnit (lang, out) -> gen "xunit" lang  out
       | Mvc (lang, out) -> gen "mvc" lang out
-      | Sln (sln, out) -> f "--name %s --output %s" (value sln) (value out)
-      | Web (out) -> f "--output %s" (value out)
-      | WebApi (out) -> f "--output %s" (value out)
+      | Sln (sln, out) -> f "sln --name %s --output %s" (value sln) (value out)
+      | Web (out) -> f "web --output %s" (value out)
+      | WebApi (out) -> f "webapi --output %s" (value out)
 
 let private getReference = function
       | PackageReference (package, version) -> 
@@ -105,6 +110,12 @@ let convertToCommandLine verb =
       | Run path -> f "dotnet run --project %s" (value path) |> Some
       | Clean path -> f "dotnet clean %s" (value path) |> Some
       | Test path -> f "dotnet test %s" (value path) |> Some
+      | Solution (sln, add, project) ->
+            let add = 
+                  match add with
+                  | AddProject -> "add"
+                  | RemoveProject -> "remove"
+            f "dotnet sln %s %s %s" (value sln) add (value project) |> Some
       | Skip -> None
 
 let rec private getOutput() =
@@ -176,7 +187,7 @@ let private getProjects() =
                getFile("*.sln") |]  |> Array.collect id 
       (files)
 
-let private selectProject(title: string, files) =
+let private selectProject (title: string) files =
       let options = files |> Array.map (fun x -> ("", x))
       let value = readInput title options None
       let ok, number = Int32.TryParse(value)
@@ -191,35 +202,35 @@ let private selectProject(title: string, files) =
 
 let rec private buildCommand() =
       let files = getProjects()
-      let project = selectProject("Select project / solution to restore packages", files)
+      let project = selectProject "Select project / solution to restore packages" files
       match project with 
       | Some x -> Build(x)
       | None -> buildCommand()
 
 let rec private restoreCommand() =
       let files = getProjects()
-      let project = selectProject("Select project / solution to restore packages", files)
+      let project = selectProject "Select project / solution to restore packages" files
       match project with 
       | Some x -> Restore(x)
       | None -> restoreCommand()
 
 let rec private runCommand() =
       let files = getProjects()
-      let project = selectProject("Select project to run", files)
+      let project = selectProject "Select project to run" files
       match project with 
       | Some x -> Run(x)
       | None -> runCommand()
 
 let rec private cleanCommand() =
       let files = getProjects()
-      let project = selectProject("Select project to clean", files)
+      let project = selectProject"Select project to clean" files
       match project with
       | Some x -> Clean(x)
       | None -> cleanCommand()
 
 let rec private projectPath title =
       let files = getProjects()
-      let project = selectProject(title, files)
+      let project = selectProject title  files
       match project with
       | Some x -> x
       | None -> projectPath title 
@@ -227,6 +238,31 @@ let rec private projectPath title =
 let rec private testCommand() =
       let project = projectPath "Select project to test"
       Test(project)
+
+let rec addOrRemoveCommand() =
+      let options = [
+            ("a add", "Add project to solution")
+            ("r remove", "Remove project from solution")
+      ]
+
+      let add = readInput "Add or remove" options None
+      match add with
+      | "a" -> AddProject
+      | "r" -> RemoveProject
+      | _ -> addOrRemoveCommand()
+
+let rec slnCommand() =
+      let projects = getProjects()
+      let sln = projects |> Array.filter (fun x -> x.EndsWith(".sln")) 
+      let solution = selectProject "Select solution" sln
+      match solution with
+      | Some sln -> 
+            let add = addOrRemoveCommand()
+            let project = selectProject "Select project to add or remove" projects
+            match project with
+            | Some proj -> Solution(sln,add,proj)
+            | None -> slnCommand()
+      | None -> slnCommand()
 
 let rec private referenceCommand() =
       let options = [
@@ -255,14 +291,14 @@ let rec private referenceCommand() =
 
 let rec private addCommand() =
       let files = getProjects()
-      let project = selectProject("Select project to add reference/package", files)
+      let project = selectProject "Select project to add reference/package" files
       match project with
       | Some x -> Add(x, referenceCommand())
       | None -> addCommand() 
 
 let rec private removeCommand() =
       let files = getProjects()
-      let project = selectProject("Select project to remove reference/package", files)
+      let project = selectProject "Select project to remove reference/package" files
       match project with
       | Some x -> Remove(x, referenceCommand())
       | None -> removeCommand() 
@@ -301,6 +337,7 @@ let getCommand str =
             | "c" | "clean" -> cleanCommand()
             | "v" | "remove " -> removeCommand()
             | "t" | "test" -> testCommand()
+            | "s" | "sln" -> slnCommand()
             | x -> Skip
 
       let cmd = convertToCommandLine(command)

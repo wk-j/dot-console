@@ -23,24 +23,10 @@ let executeCommand cmd args=
     let info = ProcessStartInfo()
     info.FileName <- cmd
     info.Arguments <- args
-    //info.RedirectStandardOutput <- true
     info.UseShellExecute <- true
-    //info.RedirectStandardError <- true
-
-    let outputHandler (s:DataReceivedEventArgs) = 
-        s.Data |> Info |> write
-
-    let errorHandler (s: DataReceivedEventArgs) =
-        s.Data |> Error |> write
 
     let ps = new Process()
     ps.StartInfo <- info
     ps.Start() |> ignore
     
-    //ps.OutputDataReceived.Add(outputHandler)
-    //ps.BeginOutputReadLine()
-
-    //ps.ErrorDataReceived.Add(errorHandler)
-    //ps.BeginErrorReadLine()
-
     ps.WaitForExit() |> ignore

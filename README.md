@@ -4,32 +4,22 @@
 
 ## Installation
 
-> `npm install -g dot-console`
+```bash
+npm install -g dot-console
+```
 
 ## Usage
 
-- Start console 
+Start console 
 
-  > `dot-console`
+```bash
+dot-console
+```
 
-- Exit `CTRL + c`
+Exit `CTRL + c`
 
-## Features
+## Contributor Code of Conduct
 
-- [x] dotnet new
-    - [x] console
-    - [x] xunit
-    - [x] mstest
-    - [x] web
-    - [x] mvc
-    - [x] webapi
-    - [x] sln
-- [x] dotnet restore
-- [x] dotnet build
-- [x] dotnet run
-- [x] dotnet clean
-- [ ] dotnet migrate
-- [ ] dotnet list
-- [x] dotnet add
-- [x] dotnet remove
-- [x] dotnet test
+This project adheres to No Code of Conduct. We are all adults. We accept anyone's contributions. Nothing else matters.
+
+For more information please visit the No Code of Conduct homepage.

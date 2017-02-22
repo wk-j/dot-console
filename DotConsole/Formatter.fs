@@ -41,5 +41,6 @@ let readInput (info:string) options (defaultValue: Option<string>)   =
             Key(key) |> write
             Description(desc) |> write
             index <- index + 1
-      Prompt("➟ ") |> write
+      //Prompt("➟ ") |> write
+      Prompt("> ") |> write
       Console.ReadLine()

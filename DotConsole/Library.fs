@@ -308,7 +308,7 @@ let getCommand str =
             ("n new", "Initialize .NET projects")
             ("r restore", "Restore dependencies specified in the .NET project")
             ("b build", "Builds a .NET project")
-            ("p publish", "Publishes a .NET project for deployment (including the runtime")
+            ("p publish", "Publishes a .NET project for deployment (including the runtime)")
             ("u run", "Compiles and immediately executes a .NET project")
             ("t test", "Runs unit tests using the test runner specified in the project")
             ("k pack", "Creates a NuGet package")

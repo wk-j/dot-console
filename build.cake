@@ -16,7 +16,7 @@ Task("Run")
     .IsDependentOn("Build")
     .Does(() => {
         StartProcess("mono", new ProcessSettings {
-            Arguments = "DotConsole.Cmd/bin/Debug/DotConsole.Cmd.exe"
+            Arguments = "DotConsole/bin/Debug/DotConsole.exe"
         });
     });
 

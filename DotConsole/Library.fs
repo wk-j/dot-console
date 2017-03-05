@@ -68,6 +68,7 @@ type Verb =
       | Test of ProjectPath
       | Solution of ProjectPath * SolutionVerb * ProjectPath
       | Skip
+      | Last of Verb
 
 let private langCmd lang =
       match lang with
@@ -303,6 +304,8 @@ let rec private removeCommand() =
       | Some x -> Remove(x, referenceCommand())
       | None -> removeCommand() 
 
+let mutable last : Verb option = None
+
 let getCommand str =
       let options = [
             ("n new", "Initialize .NET projects")
@@ -318,6 +321,7 @@ let getCommand str =
             ("a add", "Add items to the project")
             ("v remove", "Remove items from the project")
             ("l list", "List items in the project")
+            ("0 rerun", "Rerun last command again")
       ]
 
       let confirm msg =
@@ -338,7 +342,13 @@ let getCommand str =
             | "v" | "remove " -> removeCommand()
             | "t" | "test" -> testCommand()
             | "s" | "sln" -> slnCommand()
+            | "0" | "rerun" -> 
+                        match last with
+                        | Some x -> x
+                        | None -> Skip
             | x -> Skip
+
+      last <- Some command
 
       let cmd = convertToCommandLine(command)
       match cmd with

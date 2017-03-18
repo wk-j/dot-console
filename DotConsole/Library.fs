@@ -348,7 +348,10 @@ let getCommand str =
                         | None -> Skip
             | x -> Skip
 
-      last <- Some command
+      match command with
+      | Skip -> ()
+      | _ ->
+            last <- Some command
 
       let cmd = convertToCommandLine(command)
       match cmd with

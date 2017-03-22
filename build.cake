@@ -6,6 +6,15 @@ Task("Build").Does(() => {
     });
 });
 
+Task("Restore").Does(() => {
+    var solutions = GetFiles("./**/*.sln");
+    foreach(var sol in solutions)
+    {
+        Information("Restoring {0}", sol);
+        NuGetRestore(sol);
+    }
+});
+
 Task("Publish-Npm").Does(() => {
     StartProcess("npm", new ProcessSettings {
         Arguments = "publish"

@@ -6,4 +6,5 @@ before_install:
   - chmod +x build.sh
  
 script: 
+  - ./build.sh --target Restore
   - ./build.sh --target Build

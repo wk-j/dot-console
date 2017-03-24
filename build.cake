@@ -7,7 +7,12 @@ Task("Build").Does(() => {
 });
 
 Task("Restore").Does(() => {
-    NugetRestore(solution);
+    var solutions = GetFiles("./**/*.sln");
+    foreach(var sol in solutions)
+    {
+        Information("Restoring {0}", sol);
+        NuGetRestore(sol);
+    }
 });
 
 Task("Publish-Npm").Does(() => {

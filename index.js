@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var spawn = require('child_process').spawn;
-var process = require("process");
+//var process = require("process");
 
 var file = __dirname + "/DotConsole/bin/Debug/DotConsole.exe";
 

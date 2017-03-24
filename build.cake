@@ -6,6 +6,10 @@ Task("Build").Does(() => {
     });
 });
 
+Task("Restore").Does(() => {
+    NugetRestore(solution);
+});
+
 Task("Publish-Npm").Does(() => {
     StartProcess("npm", new ProcessSettings {
         Arguments = "publish"
